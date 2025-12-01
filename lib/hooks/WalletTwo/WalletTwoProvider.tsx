@@ -4,27 +4,61 @@ import WalletTwoAPI from "../../api/Wallettwo";
 
 export default function WalletTwoProvider({ children, loader }: { children: React.ReactNode, loader?: React.ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
+  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<null | { id: string; email: string }>(null);
 
-  const init = async () => {
-    const localToken = localStorage.getItem("wallettwo_token");
-    if(!localToken) return setLoading(false);;
-
-    const fetchedUser = await WalletTwoAPI.userInfo(localToken);
-    if(!fetchedUser) return setLoading(false);
+  const loadUserFromToken = async (accessToken: string) => {
+    const fetchedUser = await WalletTwoAPI.userInfo(accessToken);
+    if(!fetchedUser) return;
     setUser(fetchedUser);
-    setLoading(false);
+  }
+
+  const handleWalletTwoMessages = async (event: MessageEvent) => {
+    if (event.origin !== "https://wallet.wallettwo.com") return;
+    const { code, type } = event.data;
+
+    if(type === 'loginLoaded') return setLoading(false);
+
+    try {
+      const { access_token } = await WalletTwoAPI.exchangeConsentToken(code);
+      setToken(access_token);
+      await loadUserFromToken(access_token);
+    } catch (error) {
+      throw error;
+    } finally {
+      const iframe = document.getElementById("wallettwo-headless-login-iframe");
+      if (iframe && iframe.parentNode) {
+        document.body.removeChild(iframe);
+        // remove event listener after user is loaded
+        window.removeEventListener("message", handleWalletTwoMessages);
+      }
+      setLoading(false);
+    }
+  }
+
+  const headlessLogin = () => {
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = `https://wallet.wallettwo.com/auth/login?action=auth&iframe=true`;
+    // Append an id to iframe to remove it later
+    iframe.id = "wallettwo-headless-login-iframe";
+    document.body.appendChild(iframe);
+
+    window.addEventListener("message", handleWalletTwoMessages);
   }
 
   useEffect(() => {
-    init();
+    headlessLogin();
   }, []);
-
+  
   return (
     <WalletTwoContext.Provider value={{
       loading, setLoading,
       user, setUser,
-      init
+      token, setToken,
+      loadUserFromToken,
+      headlessLogin,
+      handleWalletTwoMessages
     }}>
       {loading ? (loader ? loader : <div>Loading...</div>) : children}
     </WalletTwoContext.Provider>

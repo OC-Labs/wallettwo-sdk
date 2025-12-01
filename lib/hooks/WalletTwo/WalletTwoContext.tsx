@@ -5,7 +5,11 @@ interface WalletTwoContextType {
   setLoading: (loading: boolean) => void;
   user: null | { id: string; email: string };
   setUser: (user: null | { id: string; email: string }) => void;
-  init: () => Promise<void>;
+  token: string | null;
+  setToken: (token: string | null) => void;
+  loadUserFromToken: (accessToken: string) => Promise<void>;
+  headlessLogin: () => void;
+  handleWalletTwoMessages: (event: MessageEvent) => void;
 }
 
 export const WalletTwoContext = createContext<WalletTwoContextType | undefined>(undefined);
