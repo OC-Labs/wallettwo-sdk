@@ -9,7 +9,7 @@ export default function useWalletTwo() {
   const exchangeConsentToken = async (code: string) => {
     const { access_token } = await WalletTwoAPI.exchangeConsentToken(code);
     localStorage.setItem("wallettwo_token", access_token);
-    context?.init();
+    context.init();
     return access_token;
   }
 
