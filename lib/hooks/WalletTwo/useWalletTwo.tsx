@@ -29,9 +29,37 @@ export default function useWalletTwo() {
     }, 1500);
   }
 
+  const signMessage = async (message: string) => {
+    const iframe = document.createElement("iframe");
+    //iframe.style.display = "none";
+    iframe.src = `https://wallet.wallettwo.com/action/signature?message=${encodeURIComponent(message)}`;
+    iframe.id = "wallettwo-headless-sign-message-iframe"
+    document.body.appendChild(iframe);
+    
+    return new Promise<string>((resolve, reject) => {
+      const handleMessage = (event: MessageEvent) => {
+        if (event.origin !== "https://wallet.wallettwo.com") return;
+        if (event.data.event === "message_signed") {
+          window.removeEventListener("message", handleMessage);
+          document.body.removeChild(iframe);
+          resolve(event.data);
+        }
+      };
+      window.addEventListener("message", handleMessage);
+
+      setTimeout(() => {
+        window.removeEventListener("message", handleMessage);
+        document.body.removeChild(iframe);
+        reject(new Error("Message signing timed out"));
+      }, 10000); // 10 seconds timeout
+    });
+    
+  }
+
   return {
     ...context,
     exchangeConsentToken,
-    logout
+    logout,
+    signMessage
   };
 }
