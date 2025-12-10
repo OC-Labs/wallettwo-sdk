@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { WalletTwoContext } from "./WalletTwoContext";
 import WalletTwoAPI from "../../api/Wallettwo";
+import TransactionModal from "./TransactionModal";
 
 export default function WalletTwoProvider({ children, loader }: { children: React.ReactNode, loader?: React.ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<null | { id: string; email: string }>(null);
+  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState<boolean>(false);
+  const [txIframe, setTxIframe] = useState<HTMLIFrameElement | null>(null);
 
   const loadUserFromToken = async (accessToken: string) => {
     const fetchedUser = await WalletTwoAPI.userInfo(accessToken);
@@ -58,8 +61,11 @@ export default function WalletTwoProvider({ children, loader }: { children: Reac
       token, setToken,
       loadUserFromToken,
       headlessLogin,
-      handleWalletTwoMessages
+      handleWalletTwoMessages,
+      isTransactionModalOpen, setIsTransactionModalOpen,
+      txIframe, setTxIframe
     }}>
+      <TransactionModal />
       {loading ? (loader ? loader : <div>Loading...</div>) : children}
     </WalletTwoContext.Provider>
   );

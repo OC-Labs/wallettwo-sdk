@@ -6,7 +6,7 @@ export default function LogoutButton() {
   if(!user) return null;
 
   return (
-    <button onClick={logout}>
+    <button className="bg-red-500 text-white px-4 py-2 rounded ml-4" onClick={logout}>
       Logout
     </button>
   );

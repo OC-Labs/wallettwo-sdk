@@ -10,6 +10,10 @@ interface WalletTwoContextType {
   loadUserFromToken: (accessToken: string) => Promise<void>;
   headlessLogin: () => void;
   handleWalletTwoMessages: (event: MessageEvent) => void;
+  isTransactionModalOpen?: boolean;
+  setIsTransactionModalOpen?: (isOpen: boolean) => void;
+  txIframe?: HTMLIFrameElement | null;
+  setTxIframe?: (iframe: HTMLIFrameElement | null) => void;
 }
 
 export const WalletTwoContext = createContext<WalletTwoContextType | undefined>(undefined);

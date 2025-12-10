@@ -31,7 +31,7 @@ export default function useWalletTwo() {
 
   const signMessage = async (message: string) => {
     const iframe = document.createElement("iframe");
-    //iframe.style.display = "none";
+    iframe.style.display = "none";
     iframe.src = `https://wallet.wallettwo.com/action/signature?message=${encodeURIComponent(message)}`;
     iframe.id = "wallettwo-headless-sign-message-iframe"
     document.body.appendChild(iframe);
@@ -53,13 +53,51 @@ export default function useWalletTwo() {
         reject(new Error("Message signing timed out"));
       }, 10000); // 10 seconds timeout
     });
-    
+  }
+
+
+  const executeTransaction = async ({
+    networkId,
+    methods,
+    params,
+    addresses,
+    redirectURI,
+    optionalAbis
+  }: {
+    networkId: number;
+    methods: string[];
+    params: any[][];
+    addresses: string[];
+    redirectURI: string[];
+    optionalAbis?: any[];
+  }
+) => {
+    context.setIsTransactionModalOpen?.(true);
+    const url = new URL("https://wallet.wallettwo.com/action/transaction");
+    const parameters = {
+      iframe: "true",
+      network: networkId,
+      methods: JSON.stringify(methods),
+      params: JSON.stringify(params),
+      addresses: JSON.stringify(addresses),
+      redirect_uri: redirectURI,
+      abis: optionalAbis ? JSON.stringify(optionalAbis) : undefined
+    }
+    parameters && Object.entries(parameters).forEach(([key, value]: [string, any]) => {
+      url.searchParams.append(key, value);
+    });
+
+    const iframe = document.createElement("iframe");
+    iframe.src = url.toString();
+    iframe.id = "wallettwo-transaction-iframe"
+    context.setTxIframe?.(iframe);
   }
 
   return {
     ...context,
     exchangeConsentToken,
     logout,
-    signMessage
+    signMessage,
+    executeTransaction
   };
 }
