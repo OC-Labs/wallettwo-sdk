@@ -18,14 +18,14 @@ export default function SignButton() {
     <button 
       className="bg-green-500 text-white px-4 py-2 rounded ml-4"
       onClick={async() => {
-        const response = await executeTransaction({
+        await executeTransaction({
           networkId: 80002,
           methods: ['faucet'],
           params: [[]],
           addresses: ['0xfa86C7c30840694293a5c997f399d00A4eD3cDD8'],
-          redirectURI: ['https://yourapp.com/transaction-complete']
+          redirectURI: ['https://yourapp.com/transaction-complete'],
+          optionalAbis: ['ERC20Faucet']
         })
-        console.log("Execute Transaction Response:", response);
       }}
     >
       Execute Transaction

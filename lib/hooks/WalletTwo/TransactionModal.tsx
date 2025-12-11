@@ -9,19 +9,20 @@ export default function TransactionModal() {
     if (!isTransactionModalOpen) return;
 
     const handleMessage = (event: MessageEvent) => {
-      console.log("Message received in TransactionModal:", event);
       if (event.origin !== "https://wallet.wallettwo.com") return;
-      if (event.data.event === "transaction_complete" || event.data.event === "transaction_cancelled") {
+      if (event.data.type === "transaction_complete" || event.data.type === "transaction_cancelled") {
         setIsTransactionModalOpen?.(false);
         window.removeEventListener("message", handleMessage);
       }
     }
     window.addEventListener("message", handleMessage);
+    console.log("Event listener added for transaction modal.");
 
     return () => {
+      console.log("Cleaning up event listener for transaction modal.");
       window.removeEventListener("message", handleMessage);
     }
-  }, [isTransactionModalOpen, setIsTransactionModalOpen]);
+  }, [isTransactionModalOpen]);
 
   return (<Transition show={isTransactionModalOpen} as={Fragment}>
     <Dialog as="div" className="relative z-50" onClose={() => setIsTransactionModalOpen?.(false)}>
