@@ -63,7 +63,7 @@ export default function useWalletTwo() {
     addresses,
     redirectURI,
     optionalAbis,
-    waitTx = false,
+    waitTx = true,
     onFinish = () => {}
   }: {
     networkId: number;
