@@ -63,6 +63,7 @@ export default function useWalletTwo() {
     addresses,
     redirectURI,
     optionalAbis,
+    waitTx = false,
     onFinish = () => {}
   }: {
     networkId: number;
@@ -71,6 +72,7 @@ export default function useWalletTwo() {
     addresses: string[];
     redirectURI: string[];
     optionalAbis?: any[];
+    waitTx?: boolean;
     onFinish?: () => void;
   }
 ) => {
@@ -83,6 +85,7 @@ export default function useWalletTwo() {
       params: JSON.stringify(params),
       addresses: JSON.stringify(addresses),
       redirect_uri: redirectURI,
+      wait_tx: waitTx ? "true" : "false",
       abis: optionalAbis ? JSON.stringify(optionalAbis) : undefined
     }
     parameters && Object.entries(parameters).forEach(([key, value]: [string, any]) => {
