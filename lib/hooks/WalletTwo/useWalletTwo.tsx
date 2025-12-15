@@ -62,7 +62,8 @@ export default function useWalletTwo() {
     params,
     addresses,
     redirectURI,
-    optionalAbis
+    optionalAbis,
+    onFinish = () => {}
   }: {
     networkId: number;
     methods: string[];
@@ -70,6 +71,7 @@ export default function useWalletTwo() {
     addresses: string[];
     redirectURI: string[];
     optionalAbis?: any[];
+    onFinish?: () => void;
   }
 ) => {
     context.setIsTransactionModalOpen?.(true);
@@ -91,6 +93,7 @@ export default function useWalletTwo() {
     iframe.src = url.toString();
     iframe.id = "wallettwo-transaction-iframe"
     context.setTxIframe?.(iframe);
+    context.setTxIframeOnFinish?.(() => onFinish);
   }
 
   return {

@@ -14,6 +14,8 @@ interface WalletTwoContextType {
   setIsTransactionModalOpen?: (isOpen: boolean) => void;
   txIframe?: HTMLIFrameElement | null;
   setTxIframe?: (iframe: HTMLIFrameElement | null) => void;
+  txIframeOnFinish?: () => void;
+  setTxIframeOnFinish?: (onFinish: () => void) => void;
 }
 
 export const WalletTwoContext = createContext<WalletTwoContextType | undefined>(undefined);

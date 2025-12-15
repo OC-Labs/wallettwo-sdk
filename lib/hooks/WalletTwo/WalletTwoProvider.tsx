@@ -9,6 +9,7 @@ export default function WalletTwoProvider({ children, loader }: { children: Reac
   const [user, setUser] = useState<null | { id: string; email: string }>(null);
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState<boolean>(false);
   const [txIframe, setTxIframe] = useState<HTMLIFrameElement | null>(null);
+  const [txIframeOnFinish, setTxIframeOnFinish] = useState<() => void>(() => {});
 
   const loadUserFromToken = async (accessToken: string) => {
     const fetchedUser = await WalletTwoAPI.userInfo(accessToken);
@@ -27,16 +28,15 @@ export default function WalletTwoProvider({ children, loader }: { children: Reac
       setToken(access_token);
       await loadUserFromToken(access_token);
     } catch (error) {
-      throw error;
-    } finally {
-      const iframe = document.getElementById("wallettwo-headless-login-iframe");
-      if (iframe && iframe.parentNode) {
-        document.body.removeChild(iframe);
-        // remove event listener after user is loaded
-        window.removeEventListener("message", handleWalletTwoMessages);
-      }
-      setLoading(false);
+      console.error("Error exchanging consent token:", error);
     }
+    const iframe = document.getElementById("wallettwo-headless-login-iframe");
+    if (iframe && iframe.parentNode) {
+      document.body.removeChild(iframe);
+      // remove event listener after user is loaded
+      window.removeEventListener("message", handleWalletTwoMessages);
+    }
+    setLoading(false);
   }
 
   const headlessLogin = () => {
@@ -63,7 +63,8 @@ export default function WalletTwoProvider({ children, loader }: { children: Reac
       headlessLogin,
       handleWalletTwoMessages,
       isTransactionModalOpen, setIsTransactionModalOpen,
-      txIframe, setTxIframe
+      txIframe, setTxIframe,
+      txIframeOnFinish, setTxIframeOnFinish
     }}>
       <TransactionModal />
       {loading ? (loader ? loader : <div>Loading...</div>) : children}
