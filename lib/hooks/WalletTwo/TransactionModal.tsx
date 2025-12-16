@@ -12,17 +12,15 @@ export default function TransactionModal() {
       if (event.origin !== "https://wallet.wallettwo.com") return;
       if (event.data.type === "transaction_complete" || event.data.type === "transaction_cancelled") {
         setIsTransactionModalOpen?.(false);
-        txIframeOnFinish?.();
+        if(event.data.type === "transaction_complete" ) txIframeOnFinish?.();
         window.removeEventListener("message", handleMessage);
       }
     }
 
     
     window.addEventListener("message", handleMessage);
-    console.log("Event listener added for transaction modal.");
 
     return () => {
-      console.log("Cleaning up event listener for transaction modal.");
       window.removeEventListener("message", handleMessage);
     }
   }, [isTransactionModalOpen]);

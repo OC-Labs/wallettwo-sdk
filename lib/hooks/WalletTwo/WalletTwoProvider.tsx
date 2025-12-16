@@ -10,6 +10,7 @@ export default function WalletTwoProvider({ children, loader }: { children: Reac
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState<boolean>(false);
   const [txIframe, setTxIframe] = useState<HTMLIFrameElement | null>(null);
   const [txIframeOnFinish, setTxIframeOnFinish] = useState<() => void>(() => {});
+  const [txIframeOnCancel, setTxIframeOnCancel] = useState<() => void>(() => {});
 
   const loadUserFromToken = async (accessToken: string) => {
     const fetchedUser = await WalletTwoAPI.userInfo(accessToken);
@@ -64,7 +65,8 @@ export default function WalletTwoProvider({ children, loader }: { children: Reac
       handleWalletTwoMessages,
       isTransactionModalOpen, setIsTransactionModalOpen,
       txIframe, setTxIframe,
-      txIframeOnFinish, setTxIframeOnFinish
+      txIframeOnFinish, setTxIframeOnFinish,
+      txIframeOnCancel, setTxIframeOnCancel,
     }}>
       <TransactionModal />
       {loading ? (loader ? loader : <div>Loading...</div>) : children}

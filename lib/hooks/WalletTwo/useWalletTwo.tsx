@@ -11,7 +11,7 @@ export default function useWalletTwo() {
     return access_token;
   }
 
-  const logout = () => {
+  const logout = async () => {
     // eopen iframe for logout
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
@@ -19,14 +19,29 @@ export default function useWalletTwo() {
     iframe.id = "wallettwo-headless-login-iframe"
     document.body.appendChild(iframe);
 
-    // clear local storage and context
-    localStorage.removeItem("wallettwo_token");
-    context.setUser(null);
-    context.setToken(null);
-    
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
+    return new Promise<string>((resolve, reject) => {
+      const handleMessage = (event: MessageEvent) => {
+        if (event.origin !== "https://wallet.wallettwo.com") return;
+        if (event.data.event === "wallet_logout") {
+          localStorage.removeItem("wallettwo_token");
+          context.setUser(null);
+          context.setToken(null);
+          
+          window.removeEventListener("message", handleMessage);
+          document.body.removeChild(iframe);
+          clearTimeout(timeoutId);
+          resolve(event.data);
+        }
+      }
+
+      const timeoutId = setTimeout(() => {
+        window.removeEventListener("message", handleMessage);
+        document.body.removeChild(iframe);
+        reject(new Error("Logout timed out"));
+      }, 10000); // 10 seconds timeout
+
+      window.addEventListener("message", handleMessage);
+    });
   }
 
   const signMessage = async (message: string) => {
@@ -61,10 +76,10 @@ export default function useWalletTwo() {
     methods,
     params,
     addresses,
-    redirectURI,
     optionalAbis,
     waitTx = true,
-    onFinish = () => {}
+    onFinish = () => {},
+    onCancel = () => {}
   }: {
     networkId: number;
     methods: string[];
@@ -74,6 +89,7 @@ export default function useWalletTwo() {
     optionalAbis?: any[];
     waitTx?: boolean;
     onFinish?: () => void;
+    onCancel?: () => void;
   }
 ) => {
     context.setIsTransactionModalOpen?.(true);
@@ -84,7 +100,6 @@ export default function useWalletTwo() {
       methods: JSON.stringify(methods),
       params: JSON.stringify(params),
       addresses: JSON.stringify(addresses),
-      redirect_uri: redirectURI,
       wait_tx: waitTx ? "true" : "false",
       abis: optionalAbis ? JSON.stringify(optionalAbis) : undefined
     }
@@ -97,6 +112,7 @@ export default function useWalletTwo() {
     iframe.id = "wallettwo-transaction-iframe"
     context.setTxIframe?.(iframe);
     context.setTxIframeOnFinish?.(() => onFinish);
+    context.setTxIframeOnCancel?.(() => onCancel);
   }
 
   return {

@@ -16,6 +16,8 @@ interface WalletTwoContextType {
   setTxIframe?: (iframe: HTMLIFrameElement | null) => void;
   txIframeOnFinish?: () => void;
   setTxIframeOnFinish?: (onFinish: () => void) => void;
+  txIframeOnCancel?: () => void;
+  setTxIframeOnCancel?: (onCancel: () => void) => void;
 }
 
 export const WalletTwoContext = createContext<WalletTwoContextType | undefined>(undefined);
