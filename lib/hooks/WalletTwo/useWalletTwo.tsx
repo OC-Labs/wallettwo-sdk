@@ -15,7 +15,7 @@ export default function useWalletTwo() {
     // eopen iframe for logout
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
-    iframe.src = `https://wallet.wallettwo.com/auth/login?action=logout&iframe=true`;
+    iframe.src = `https://wallet.wallettwo.com/action/logout?iframe=true`;
     iframe.id = "wallettwo-headless-login-iframe"
     document.body.appendChild(iframe);
 
