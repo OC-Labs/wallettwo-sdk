@@ -3,10 +3,14 @@ import { Fragment, useEffect } from "react"
 import useWalletTwo from "./useWalletTwo";
 
 export default function TransactionModal() {
-  const { isTransactionModalOpen, setIsTransactionModalOpen, txIframe, txIframeOnFinish } = useWalletTwo();
+  const { isTransactionModalOpen, setIsTransactionModalOpen, txIframe, txIframeOnFinish, setTxIframeOnCancel, setTxIframeOnFinish } = useWalletTwo();
 
   useEffect(() => {
-    if (!isTransactionModalOpen) return;
+    if (!isTransactionModalOpen) {
+      setIsTransactionModalOpen?.(false);
+      setTxIframeOnCancel?.(() => {});
+      setTxIframeOnFinish?.(() => {});
+    }
 
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== "https://wallet.wallettwo.com") return;

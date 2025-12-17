@@ -57,16 +57,18 @@ export default function useWalletTwo() {
         if (event.data.event === "message_signed") {
           window.removeEventListener("message", handleMessage);
           document.body.removeChild(iframe);
+          clearTimeout(timeoutId);
           resolve(event.data);
         }
       };
-      window.addEventListener("message", handleMessage);
 
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         window.removeEventListener("message", handleMessage);
         document.body.removeChild(iframe);
         reject(new Error("Message signing timed out"));
       }, 10000); // 10 seconds timeout
+
+      window.addEventListener("message", handleMessage);
     });
   }
 
