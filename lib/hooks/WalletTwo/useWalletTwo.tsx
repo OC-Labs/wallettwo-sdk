@@ -121,7 +121,7 @@ export default function useWalletTwo() {
   const handleWalletTwoRedirect = async (event: MessageEvent) => {
     if (event.origin !== "https://wallet.wallettwo.com") return;
     const { code, type } = event.data;
-    if(type === 'loginLoaded') return setLoading(false);
+    if(type === 'loginLoaded') return window.location.href = `https://wallet.wallettwo.com/auth/login`;
 
     window.removeEventListener("message", handleWalletTwoRedirect);
     window.location.href = `https://wallet.wallettwo.com/auth/login?access_token=${code}`;
