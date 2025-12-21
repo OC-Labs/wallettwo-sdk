@@ -66,7 +66,7 @@ export default function WalletTwoProvider({ children, loader }: { children: Reac
       isTransactionModalOpen, setIsTransactionModalOpen,
       txIframe, setTxIframe,
       txIframeOnFinish, setTxIframeOnFinish,
-      txIframeOnCancel, setTxIframeOnCancel,
+      txIframeOnCancel, setTxIframeOnCancel
     }}>
       <TransactionModal />
       {loading ? (loader ? loader : <div>Loading...</div>) : children}

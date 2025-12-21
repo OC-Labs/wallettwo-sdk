@@ -1,7 +1,7 @@
 import useWalletTwo from "../lib/hooks/WalletTwo/useWalletTwo";
 
 export default function SignButton() {
-  const { user, signMessage, executeTransaction } = useWalletTwo();
+  const { user, redirectToWalletTwo, executeTransaction } = useWalletTwo();
 
   if(!user) return null;
 
@@ -9,7 +9,7 @@ export default function SignButton() {
     <button 
       className="bg-blue-500 text-white px-4 py-2 rounded ml-4"
       onClick={async() => {
-      const response = await signMessage("Hello, World!")
+      const response = await redirectToWalletTwo()
       console.log("Signed Message Response:", response);
     }}>
       Sign Message

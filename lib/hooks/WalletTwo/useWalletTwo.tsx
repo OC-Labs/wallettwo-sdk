@@ -117,11 +117,33 @@ export default function useWalletTwo() {
     context.setTxIframeOnCancel?.(() => onCancel);
   }
 
+
+  const handleWalletTwoRedirect = async (event: MessageEvent) => {
+    if (event.origin !== "https://wallet.wallettwo.com") return;
+    const { code, type } = event.data;
+    if(type === 'loginLoaded') return setLoading(false);
+
+    window.removeEventListener("message", handleWalletTwoRedirect);
+    window.location.href = `https://wallet.wallettwo.com/auth/login?access_token=${code}`;
+  }
+
+  const redirectToWalletTwo = () => {
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = `https://wallet.wallettwo.com/auth/login?action=auth&iframe=true`;
+    // Append an id to iframe to remove it later
+    iframe.id = "wallettwo-headless-login-iframe";
+    document.body.appendChild(iframe);
+
+    window.addEventListener("message", handleWalletTwoRedirect);
+  }
+
   return {
     ...context,
     exchangeConsentToken,
     logout,
     signMessage,
-    executeTransaction
+    executeTransaction,
+    redirectToWalletTwo
   };
 }
