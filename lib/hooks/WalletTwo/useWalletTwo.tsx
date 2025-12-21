@@ -118,16 +118,21 @@ export default function useWalletTwo() {
   }
 
 
-  const handleWalletTwoRedirect = async (event: MessageEvent) => {
+  const handleWalletTwoRedirect = async (event: MessageEvent, openNewTab: boolean) => {
     if (event.origin !== "https://wallet.wallettwo.com") return;
     const { code, type } = event.data;
     if(type === 'loginLoaded') return window.location.href = `https://wallet.wallettwo.com/auth/login`;
 
-    window.removeEventListener("message", handleWalletTwoRedirect);
-    window.location.href = `https://wallet.wallettwo.com/auth/login?access_token=${code}`;
+    window.removeEventListener("message", (event) => handleWalletTwoRedirect(event, openNewTab));
+    if(openNewTab) {
+      window.open(`https://wallet.wallettwo.com/auth/login?access_token=${code}`, '_blank');
+      return;
+    } else {
+      window.location.href = `https://wallet.wallettwo.com/auth/login?access_token=${code}`;
+    }
   }
 
-  const redirectToWalletTwo = () => {
+  const redirectToWalletTwo = (openNewTab = false) => {
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     iframe.src = `https://wallet.wallettwo.com/auth/login?action=auth&iframe=true`;
@@ -135,7 +140,7 @@ export default function useWalletTwo() {
     iframe.id = "wallettwo-headless-login-iframe";
     document.body.appendChild(iframe);
 
-    window.addEventListener("message", handleWalletTwoRedirect);
+    window.addEventListener("message", (event) => handleWalletTwoRedirect(event, openNewTab));
   }
 
   return {
