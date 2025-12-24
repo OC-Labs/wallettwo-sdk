@@ -23,6 +23,7 @@ export default function WalletTwoProvider({ children, loader }: { children: Reac
     const { code, type } = event.data;
 
     if(type === 'loginLoaded') return setLoading(false);
+    if(type === "pinRequested") return setLoading(false);
 
     try {
       const { access_token } = await WalletTwoAPI.exchangeConsentToken(code);
