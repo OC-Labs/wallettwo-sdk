@@ -3,7 +3,7 @@ import { Fragment, useEffect } from "react"
 import useWalletTwo from "./useWalletTwo";
 
 export default function TransactionModal() {
-  const { isTransactionModalOpen, setIsTransactionModalOpen, txIframe, txIframeOnFinish, setTxIframeOnCancel, setTxIframeOnFinish } = useWalletTwo();
+  const { isTransactionModalOpen, setIsTransactionModalOpen, txIframe, txIframeOnFinish, setTxIframeOnCancel, txIframeOnCancel, setTxIframeOnFinish } = useWalletTwo();
 
   useEffect(() => {
     if (!isTransactionModalOpen) {
@@ -14,13 +14,14 @@ export default function TransactionModal() {
 
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== "https://wallet.wallettwo.com") return;
-      if (event.data.type === "transaction_complete" || event.data.type === "transaction_cancelled") {
-        if(event.data.type === "transaction_complete" ) txIframeOnFinish?.();
-        window.removeEventListener("message", handleMessage);
-        setTimeout(() => {
-          setIsTransactionModalOpen?.(false);
-        }, 1000);
-      }
+      if (event.data.type !== "transaction_complete" || event.data.type !== "transaction_cancelled") return;
+      if(event.data.type === "transaction_complete" ) txIframeOnFinish?.();
+      else if(event.data.type === "transaction_cancelled" ) txIframeOnCancel?.();
+
+      window.removeEventListener("message", handleMessage);
+      setTimeout(() => {
+        setIsTransactionModalOpen?.(false);
+      }, 1000);
     }
 
     
