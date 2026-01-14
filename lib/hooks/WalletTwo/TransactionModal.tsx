@@ -14,9 +14,17 @@ export default function TransactionModal() {
 
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== "https://wallet.wallettwo.com") return;
-      if (event.data.type !== "transaction_complete" || event.data.type !== "transaction_cancelled") return;
-      if(event.data.type === "transaction_complete" ) txIframeOnFinish?.();
-      else if(event.data.type === "transaction_cancelled" ) txIframeOnCancel?.();
+      const type = event.data.type;
+      if (type !== "transaction_complete" && type !== "transaction_cancelled") return;
+      
+      if(type === "transaction_complete" ) {
+        console.log("Transaction complete");
+        txIframeOnFinish?.();
+      }
+      else if(type === "transaction_cancelled" ) {
+        console.log("Transaction cancelled");
+        txIframeOnCancel?.();
+      }
 
       window.removeEventListener("message", handleMessage);
       setTimeout(() => {
