@@ -1,12 +1,6 @@
 import './style.css'
-import useWalletTwo from './hooks/WalletTwo/useWalletTwo'
-import WalletTwoProvider from './hooks/WalletTwo/WalletTwoProvider'
-import { WalletTwoContext } from './hooks/WalletTwo/WalletTwoContext'
-import WalletTwoLogin from './ui/WalletTwo/Login'
+import useWalletTwo from './hooks/useWalletTwo'
 
 export {
-  useWalletTwo,
-  WalletTwoProvider,
-  WalletTwoContext,
-  WalletTwoLogin
+  useWalletTwo
 }

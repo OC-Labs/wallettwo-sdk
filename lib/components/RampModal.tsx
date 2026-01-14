@@ -1,18 +1,23 @@
 import { Transition, Dialog, TransitionChild, DialogPanel } from "@headlessui/react"
 import { Fragment, useEffect } from "react"
-import useWalletTwo from "./useWalletTwo";
+import useWalletTwo from "../hooks/useWalletTwo";
 
-export default function TransactionModal() {
-  const { isTransactionModalOpen, setIsTransactionModalOpen, txIframe, txIframeOnFinish, setTxIframeOnCancel, setTxIframeOnFinish } = useWalletTwo();
+export default function RampModal() {
+  /*const { 
+    isRampModalOpen, setIsRampModalOpen,
+    rampIframe, setRampIframe,
+    rampIframeOnFinish, setRampIframeOnFinish,
+    rampIframeOnCancel, setRampIframeOnCancel,
+  } = useWalletTwo();
 
   useEffect(() => {
-    if (!isTransactionModalOpen) {
-      setIsTransactionModalOpen?.(false);
-      setTxIframeOnCancel?.(() => {});
-      setTxIframeOnFinish?.(() => {});
+    if (!isRampModalOpen) {
+      setIsRampModalOpen?.(false);
+      setRampIframeOnCancel?.(() => {});
+      setRampIframeOnFinish?.(() => {});
     }
 
-    const handleMessage = (event: MessageEvent) => {
+    /*const handleMessage = (event: MessageEvent) => {
       if (event.origin !== "https://wallet.wallettwo.com") return;
       if (event.data.type === "transaction_complete" || event.data.type === "transaction_cancelled") {
         if(event.data.type === "transaction_complete" ) txIframeOnFinish?.();
@@ -29,10 +34,10 @@ export default function TransactionModal() {
     return () => {
       window.removeEventListener("message", handleMessage);
     }
-  }, [isTransactionModalOpen]);
+  }, [isRampModalOpen]);
 
-  return (<Transition show={isTransactionModalOpen} as={Fragment}>
-    <Dialog as="div" className="relative z-50" onClose={() => setIsTransactionModalOpen?.(false)}>
+  return (<Transition show={isRampModalOpen} as={Fragment}>
+    <Dialog as="div" className="relative z-50" onClose={() => setIsRampModalOpen?.(false)}>
       <TransitionChild
         as={Fragment}
         enter="ease-out duration-300"
@@ -57,11 +62,11 @@ export default function TransactionModal() {
         >
           <DialogPanel className={`transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all`}>
             <div className="h-full w-full" id="wallettwo-transaction-modal-container">
-              {txIframe && (
+              {rampIframe && (
                 <iframe
-                  src={txIframe.src}
-                  id={txIframe.id}
-                  className="w-full min-w-[600px] min-h-[250px] border-0"
+                  src={rampIframe.src}
+                  id={rampIframe.id}
+                  className="w-full min-w-[600px] min-h-[650px] border-0"
                   title="WalletTwo Transaction"
                 />
               )}
@@ -70,5 +75,6 @@ export default function TransactionModal() {
         </TransitionChild>
       </div>
     </Dialog>
-  </Transition>)
+  </Transition>)*/
+  return (<></>);
 }

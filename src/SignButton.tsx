@@ -1,7 +1,7 @@
-import useWalletTwo from "../lib/hooks/WalletTwo/useWalletTwo";
+import useWalletTwo from "../lib/hooks/useWalletTwo";
 
 export default function SignButton() {
-  const { user, redirectToWalletTwo, executeTransaction } = useWalletTwo();
+  const { user, redirectToWalletTwo, executeTransaction, openRamp } = useWalletTwo();
 
   if(!user) return null;
 
@@ -20,7 +20,7 @@ export default function SignButton() {
       onClick={async() => {
         await executeTransaction({
           networkId: 80002,
-          methods: ['faucet'],
+          methods: ['faucet', 'faucet'],
           params: [[]],
           addresses: ['0xfa86C7c30840694293a5c997f399d00A4eD3cDD8'],
           redirectURI: ['https://yourapp.com/transaction-complete'],
@@ -29,6 +29,22 @@ export default function SignButton() {
       }}
     >
       Execute Transaction
+    </button>
+
+    <button 
+      className="bg-purple-500 text-white px-4 py-2 rounded ml-4"
+      onClick={async() => {
+        await openRamp({
+          onFinish: () => {
+            console.log("Ramp finished successfully");
+          },
+          onCancel: () => {
+            console.log("Ramp was cancelled");
+          }
+        })
+      }}
+    >
+      Open Ramp
     </button>
   </>);
 }

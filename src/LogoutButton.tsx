@@ -1,4 +1,4 @@
-import useWalletTwo from "../lib/hooks/WalletTwo/useWalletTwo";
+import useWalletTwo from "../lib/hooks/useWalletTwo";
 
 export default function LogoutButton() {
   const { user, logout } = useWalletTwo();

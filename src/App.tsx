@@ -1,13 +1,15 @@
-import WalletTwoProvider from "../lib/hooks/WalletTwo/WalletTwoProvider"
-import WalletTwoLogin from "../lib/ui/WalletTwo/Login"
-import LogoutButton from "./LogoutButton.tsx";
-import SignButton from "./SignButton.tsx";
+import WalletTwoProvider from "../lib/components/WalletTwoProvider"
+import AuthView from "../lib/ui/auth"
+import LogoutButton from "./LogoutButton"
 
 export default function App() {
 
   return <WalletTwoProvider>
-    <WalletTwoLogin />
-    <SignButton />
+    <>Test</>
+    <AuthView />
     <LogoutButton />
+    {/*<WalletTwoLogin />
+    <SignButton />
+    <LogoutButton />*/}
   </WalletTwoProvider>
 }
