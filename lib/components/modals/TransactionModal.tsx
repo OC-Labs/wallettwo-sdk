@@ -1,7 +1,3 @@
-import { Transition, Dialog, TransitionChild, DialogPanel } from "@headlessui/react"
-import { Fragment, useEffect } from "react"
-import useWalletTwo from "../../hooks/useWalletTwo";
-
 export default function TransactionModal() {
   /*const { isTransactionModalOpen, setIsTransactionModalOpen, txIframe, txIframeOnFinish, setTxIframeOnCancel, setTxIframeOnFinish } = useWalletTwo();
 

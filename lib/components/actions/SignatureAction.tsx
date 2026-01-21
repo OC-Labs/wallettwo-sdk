@@ -9,7 +9,7 @@ export default function SignatureAction({
   onSignature?: (signature: string) => void 
 }) {
   const { defaultHandler } = useMessageHandler();
-  const { user, setToken, setUser } = useStoreWalletTwo();
+  const { user } = useStoreWalletTwo();
     
   const url = new URL(`https://wallet.wallettwo.com/auth/login`)
   url.searchParams.append("action", "signature");
