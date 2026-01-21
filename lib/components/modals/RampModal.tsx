@@ -1,6 +1,6 @@
 import { Transition, Dialog, TransitionChild, DialogPanel } from "@headlessui/react"
 import { Fragment, useEffect } from "react"
-import useWalletTwo from "../hooks/useWalletTwo";
+import useWalletTwo from "../../hooks/useWalletTwo";
 
 export default function RampModal() {
   /*const { 

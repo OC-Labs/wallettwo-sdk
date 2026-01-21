@@ -71,10 +71,27 @@ export default function useMessageHandler () {
     });
   }
 
+  const defaultHandler = (event: MessageEvent) => {
+    if (event.origin !== "https://wallet.wallettwo.com") return;
+    if ([
+      "login_required",
+      "pin_required",
+      "register_required",
+      "email_verification_required",
+      "wallet_required"
+    ].includes(event.data.type)) {
+      setUser(null);
+      setToken(null);
+      return;
+    }
+
+  }
+
   return {
     headlessLogin,
     login,
-    logout
+    logout,
+    defaultHandler
   }
   
 }
