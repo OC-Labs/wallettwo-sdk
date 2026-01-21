@@ -3,9 +3,14 @@ import { useStoreWalletTwo } from "../store";
 import { useWalletTwo } from "../main";
 import WalletTwoAPI from "../api/Wallettwo";
 
-export default function WalletTwoProvider(
-  { children, loader }: 
-  { children: React.ReactNode, loader?: React.ReactNode 
+export default function WalletTwoProvider({ 
+  children, 
+  loader, 
+  disableLoader 
+}: { 
+  children: React.ReactNode, 
+  loader?: React.ReactNode,
+  disableLoader?: boolean
 }) {
   const { loading, token, setToken, setUser } = useStoreWalletTwo();
   const { headlessLogin } = useWalletTwo();
@@ -19,8 +24,7 @@ export default function WalletTwoProvider(
     WalletTwoAPI.userInfo(token).then(fetchedUser => {
       if(!fetchedUser) setToken(null);
       else setUser(fetchedUser);
-
-      // remove wallettwo-headless-login-iframe if it exists
+      
       const iframe = document.getElementById("wallettwo-headless-login-iframe");
       if (iframe && iframe.parentNode) {
         document.body.removeChild(iframe);
@@ -28,7 +32,7 @@ export default function WalletTwoProvider(
     });
   }, [token]);
 
-  if(loading) {
+  if(loading && !disableLoader) {
     return loader ? <>{loader}</> : <div>Loading WalletTwo...</div>;
   }
   

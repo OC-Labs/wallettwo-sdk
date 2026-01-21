@@ -2,7 +2,11 @@ import { useEffect } from "react";
 import { useStoreWalletTwo } from "../../store";
 import useMessageHandler from "../../hooks/useMessageHandler";
 
-export default function LogoutAction({ onLogout }: { onLogout?: () => void }) {
+export default function LogoutAction({ 
+  onLogout
+}: { 
+  onLogout?: () => void 
+}) {
   const { defaultHandler } = useMessageHandler();
   const { user, setToken, setUser } = useStoreWalletTwo();
     

@@ -2,7 +2,15 @@ import { useEffect } from "react";
 import { useStoreWalletTwo } from "../../store";
 import useMessageHandler from "../../hooks/useMessageHandler";
 
-export default function RampAction({ onRampSuccess , onRampFailure, onRampCancel}: { onRampSuccess?: (transactionId: string) => void, onRampFailure?: (error: string) => void, onRampCancel?: () => void }) {
+export default function RampAction({ 
+  onRampSuccess, 
+  onRampFailure, 
+  onRampCancel 
+}: { 
+  onRampSuccess?: (transactionId: string) => void, 
+  onRampFailure?: (error: string) => void, 
+  onRampCancel?: () => void 
+}) {
   const { defaultHandler } = useMessageHandler();
   const { user } = useStoreWalletTwo();
     
@@ -17,8 +25,8 @@ export default function RampAction({ onRampSuccess , onRampFailure, onRampCancel
     if (!iframe || event.source !== iframe.contentWindow) return;
     
     if (event.data.type === "ramp_complete") {
-      const { transactionId } = event.data;
-      if(onRampSuccess) await onRampSuccess(transactionId);
+      const { session } = event.data;
+      if(onRampSuccess) await onRampSuccess(session);
     }
 
     if (event.data.type === "ramp_cancelled") {

@@ -3,7 +3,7 @@ import { useStoreWalletTwo } from "../store";
 import useMessageHandler from "./useMessageHandler";
 
 export default function useWalletTwo() {
-  const { setUser, setToken, user } = useStoreWalletTwo();
+  const { setUser, user } = useStoreWalletTwo();
   const messageHandlers = useMessageHandler();
   
   const headlessLogin = () => {
@@ -23,7 +23,6 @@ export default function useWalletTwo() {
   }
 
   const logout = async () => {
-    // eopen iframe for logout
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     iframe.src = `https://wallet.wallettwo.com/action/logout?iframe=true`;

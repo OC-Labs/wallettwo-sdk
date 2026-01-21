@@ -2,7 +2,11 @@ import { useEffect } from "react";
 import { useStoreWalletTwo } from "../../store";
 import WalletTwoAPI from "../../api/Wallettwo";
 
-export default function AuthAction({ onAuth }: { onAuth?: (accessToken: string) => void }) {
+export default function AuthAction({ 
+  onAuth
+}: {
+  onAuth?: (accessToken: string) => void 
+}) {
   const { user, setToken } = useStoreWalletTwo();
     
   const url = new URL(`https://wallet.wallettwo.com/auth/login`)
@@ -26,8 +30,6 @@ export default function AuthAction({ onAuth }: { onAuth?: (accessToken: string) 
     } catch (error) {
       console.error("Error exchanging consent token:", error);
     }
-
-    
 
     window.removeEventListener("message", handler);
   }

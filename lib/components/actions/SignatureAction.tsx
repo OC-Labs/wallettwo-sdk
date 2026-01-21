@@ -2,7 +2,12 @@ import { useEffect } from "react";
 import { useStoreWalletTwo } from "../../store";
 import useMessageHandler from "../../hooks/useMessageHandler";
 
-export default function SignatureAction({ message = "", onSignature }: { message: string, onSignature?: (signature: string) => void }) {
+export default function SignatureAction({ 
+  message = "", onSignature 
+}: { 
+  message: string, 
+  onSignature?: (signature: string) => void 
+}) {
   const { defaultHandler } = useMessageHandler();
   const { user, setToken, setUser } = useStoreWalletTwo();
     
