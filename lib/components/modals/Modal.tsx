@@ -3,7 +3,26 @@ import useModal from "../../hooks/useModal"
 import { Fragment } from "react"
 import { ChevronLeft, X } from "lucide-react"
 
-export default function Modal({ name, title = "", children, className = '', closeButton = true, backButton = false, onBack, titleClassName = "", ...props }) {
+export default function Modal({ 
+  name,
+  title = "",
+  children,
+  className = '',
+  closeButton = true,
+  backButton = false,
+  onBack,
+  titleClassName = "",
+  ...props
+}: { 
+  name: string,
+  title?: string | React.ReactNode,
+  children?: React.ReactNode,
+  className?: string,
+  closeButton?: boolean,
+  backButton?: boolean,
+  onBack?: () => void,
+  titleClassName?: string
+}) {
   const depositModal = useModal(name)
 
   const handleClose = () => depositModal.close()
