@@ -3,7 +3,7 @@ import { useStoreWalletTwo } from "../store";
 import useMessageHandler from "./useMessageHandler";
 
 export default function useWalletTwo() {
-  const { setUser, user } = useStoreWalletTwo();
+  const { setUser, user, token } = useStoreWalletTwo();
   const messageHandlers = useMessageHandler();
   
   const headlessLogin = () => {
@@ -36,6 +36,7 @@ export default function useWalletTwo() {
     headlessLogin,
     loadUserFromToken,
     logout,
-    user
+    user,
+    token
   };
 }
