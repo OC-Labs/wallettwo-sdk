@@ -21,7 +21,7 @@ export default function WalletTwoProvider({
 
   useEffect(() => {
     if(!token) return;
-    WalletTwoAPI.userInfo(token).then(fetchedUser => {
+    WalletTwoAPI.userInfo(token).then(({user: fetchedUser}) => {
       if(!fetchedUser) setToken(null);
       else setUser(fetchedUser);
       

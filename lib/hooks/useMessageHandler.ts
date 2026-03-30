@@ -6,16 +6,16 @@ export default function useMessageHandler () {
 
   const headlessLogin = async (event: MessageEvent) => {
     if (event.origin !== "https://wallet.wallettwo.com") return;
-    const { code, type } = event.data;
+    const { token, type } = event.data;
 
-    if(type !== "wallet_login") {
+    if(type !== "wallet_session") {
       window.removeEventListener("message", headlessLogin);
       return setLoading(false);
     }
 
     try {
-      const { access_token } = await WalletTwoAPI.exchangeConsentToken(code);
-      setToken(access_token);
+      const { session} = await WalletTwoAPI.exchangeConsentToken(token);
+      setToken(session.token);
     } catch (error) {
       console.error("Error exchanging consent token:", error);
     }
@@ -26,13 +26,13 @@ export default function useMessageHandler () {
 
   const login = async (event: MessageEvent) => {
     if (event.origin !== "https://wallet.wallettwo.com") return;
-    const { code, type } = event.data;
+    const { token, type } = event.data;
 
-    if(type !== "wallet_login") return;
+    if(type !== "wallet_session") return;
 
     try {
-      const { access_token } = await WalletTwoAPI.exchangeConsentToken(code);
-      setToken(access_token);
+      const { session } = await WalletTwoAPI.exchangeConsentToken(token);
+      setToken(session.token);
     } catch (error) {
       console.error("Error exchanging consent token:", error);
     }

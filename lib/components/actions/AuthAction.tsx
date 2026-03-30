@@ -10,7 +10,7 @@ export default function AuthAction({
   const { user, setToken } = useStoreWalletTwo();
     
   const url = new URL(`https://wallet.wallettwo.com/auth/login`)
-  url.searchParams.append("action", "auth");
+  url.searchParams.append("action", "session");
   url.searchParams.append("iframe", "true");
   
   const handler = async (event: MessageEvent) => {
@@ -19,14 +19,14 @@ export default function AuthAction({
     const iframe = document.getElementById("wallettwo-auth-iframe") as HTMLIFrameElement;
     if (!iframe || event.source !== iframe.contentWindow) return;
     
-    const { code, type } = event.data;
+    const { token, type } = event.data;
 
-    if(type !== "wallet_login") return;
+    if(type !== "wallet_session") return;
 
     try {
-      const { access_token } = await WalletTwoAPI.exchangeConsentToken(code);
-      setToken(access_token);
-      if(onAuth) await onAuth(access_token);
+      const { session } = await WalletTwoAPI.exchangeConsentToken(token);
+      setToken(session.token);
+      if(onAuth) await onAuth(session.token);
     } catch (error) {
       console.error("Error exchanging consent token:", error);
     }

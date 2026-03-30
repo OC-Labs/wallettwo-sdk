@@ -7,9 +7,10 @@ export default function useWalletTwo() {
   const messageHandlers = useMessageHandler();
   
   const headlessLogin = () => {
+    console.log("Initiating headless login...");  
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
-    iframe.src = `https://wallet.wallettwo.com/auth/login?action=auth&iframe=true`;
+    iframe.src = `https://wallet.wallettwo.com/auth/login?action=session&iframe=true`;
     iframe.id = `wallettwo-headless-login-iframe`;
     document.body.appendChild(iframe);
 
@@ -17,6 +18,7 @@ export default function useWalletTwo() {
   }
 
   const loadUserFromToken = async (accessToken: string) => {
+    console.log("Loading user from token:", accessToken);
     const fetchedUser = await WalletTwoAPI.userInfo(accessToken);
     if(!fetchedUser) return;
     setUser(fetchedUser);
@@ -25,7 +27,7 @@ export default function useWalletTwo() {
   const logout = async () => {
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
-    iframe.src = `https://wallet.wallettwo.com/action/logout?iframe=true`;
+    iframe.src = `https://wallet.wallettwo.com/action/logout?iframe=true&auto_accept=true`;
     iframe.id = "wallettwo-headless-logout-iframe";
     document.body.appendChild(iframe);
 

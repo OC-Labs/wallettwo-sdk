@@ -18,7 +18,7 @@ export default class WalletTwoAPI {
   
 
   static async userInfo(accessToken: string) {
-    const { data } = await axios.get(`${WalletTwoAPI._authUrl}/userinfo`, {
+    const { data } = await axios.get(`${WalletTwoAPI._authUrl}/api/auth/get-session`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`
       }
@@ -27,9 +27,11 @@ export default class WalletTwoAPI {
     return data;
   }
 
-    static async exchangeConsentToken(code: string) {
+  static async exchangeConsentToken(code: string) {
     if (!code) throw new Error('Code is required to exchange consent token.');
-    const { data } = await axios.get(`${WalletTwoAPI._authUrl}/consent?code=${code}`);
+    const { data } = await axios.post(`${WalletTwoAPI._authUrl}/api/auth/one-time-token/verify`, {
+      token: code
+    });
     return data;
   }
 }
