@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useStoreWalletTwo } from "../store";
 import { useWalletTwo } from "../main";
 import WalletTwoAPI from "../api/Wallettwo";
+import TransactionModal from "./modals/TransactionModal";
 
 export default function WalletTwoProvider({ 
   children, 
@@ -38,5 +39,6 @@ export default function WalletTwoProvider({
   
   return (<div className="wallettwo-provider-container-root">
     {children}
+    <TransactionModal />
   </div>);
 }

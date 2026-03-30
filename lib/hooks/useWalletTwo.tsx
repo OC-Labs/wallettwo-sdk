@@ -1,5 +1,5 @@
 import WalletTwoAPI from "../api/Wallettwo";
-import { useStoreWalletTwo } from "../store";
+import { useStoreWalletTwo, useStoreModal } from "../store";
 import useMessageHandler from "./useMessageHandler";
 
 export default function useWalletTwo() {
@@ -32,12 +32,12 @@ export default function useWalletTwo() {
     return new Promise<string>((resolve, reject) => {
       const handleMessage = (event: MessageEvent) => {
         if (event.origin !== "https://wallet.wallettwo.com") return;
+        console.log("Received message from WalletTwo:", event.data);
 
-        if (event.data.type === "message_signed") {
+        if (event.data.event === "message_signed") {
+          console.log("Message signed successfully:", event.data.signature);
           window.removeEventListener("message", handleMessage);
-          if (iframe.parentNode === document.body) {
-            document.body.removeChild(iframe);
-          }
+          if (iframe.parentNode === document.body) document.body.removeChild(iframe);
           clearTimeout(timeoutId);
           resolve(event.data.signature);
         }
@@ -55,6 +55,23 @@ export default function useWalletTwo() {
     });
   }
 
+  const openModal = useStoreModal((state) => state.openModal);
+
+  const executeTransaction = (params: {
+    network?: string,
+    methods?: string[],
+    params?: unknown[],
+    addresses?: string[],
+    abis?: unknown[],
+    waitTx?: boolean,
+    onSuccess?: (tx: string) => void,
+    onFailure?: (error: string) => void,
+    onCancel?: () => void,
+    onExecuting?: () => void,
+  }) => {
+    openModal("transaction-modal", params as Record<string, unknown>);
+  }
+
   const logout = async () => {
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
@@ -69,6 +86,7 @@ export default function useWalletTwo() {
     headlessLogin,
     loadUserFromToken,
     signMessage,
+    executeTransaction,
     logout,
     user,
     token

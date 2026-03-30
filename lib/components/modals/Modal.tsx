@@ -58,7 +58,6 @@ export default function Modal({
             <Dialog.Panel
               className={`
                 transform overflow-y-auto
-                max-h-[90vh]
                 rounded-2xl bg-white p-6 sm:p-8 shadow-xl transition-all
                 ${className || ''}
               `}
