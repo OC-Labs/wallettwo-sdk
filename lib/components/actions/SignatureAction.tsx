@@ -15,6 +15,7 @@ export default function SignatureAction({
   url.searchParams.append("action", "signature");
   url.searchParams.append("message", message);
   url.searchParams.append("iframe", "true");
+  url.searchParams.append("auto_accept", "false");
   
   const handler = async (event: MessageEvent) => {
     await defaultHandler(event);

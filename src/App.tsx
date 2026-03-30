@@ -9,7 +9,7 @@ export default function App() {
     <>Test</>
     <AuthAction />
     <LogoutButton />
-    <TransactionAction 
+    {/*<TransactionAction 
       network="80002" 
       methods={['faucet']} 
       params={[[]]} 
@@ -25,7 +25,7 @@ export default function App() {
       onCancel={() => {
         console.log("Transaction was cancelled by the user.");
       }}
-    />
+    />*/}
     {/*<WalletTwoLogin />
     <SignButton />
     <LogoutButton />*/}

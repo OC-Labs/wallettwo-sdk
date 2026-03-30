@@ -7,7 +7,6 @@ export default function useWalletTwo() {
   const messageHandlers = useMessageHandler();
   
   const headlessLogin = () => {
-    console.log("Initiating headless login...");  
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     iframe.src = `https://wallet.wallettwo.com/auth/login?action=session&iframe=true`;
@@ -18,10 +17,42 @@ export default function useWalletTwo() {
   }
 
   const loadUserFromToken = async (accessToken: string) => {
-    console.log("Loading user from token:", accessToken);
     const fetchedUser = await WalletTwoAPI.userInfo(accessToken);
     if(!fetchedUser) return;
     setUser(fetchedUser);
+  }
+
+  const signMessage = async (message: string) => {
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = `https://wallet.wallettwo.com/auth/login?action=signature&message=${encodeURIComponent(message)}&iframe=true&auto_accept=true`;
+    iframe.id = "wallettwo-headless-signature-iframe";
+    document.body.appendChild(iframe);
+
+    return new Promise<string>((resolve, reject) => {
+      const handleMessage = (event: MessageEvent) => {
+        if (event.origin !== "https://wallet.wallettwo.com") return;
+
+        if (event.data.type === "message_signed") {
+          window.removeEventListener("message", handleMessage);
+          if (iframe.parentNode === document.body) {
+            document.body.removeChild(iframe);
+          }
+          clearTimeout(timeoutId);
+          resolve(event.data.signature);
+        }
+      }
+
+      const timeoutId = setTimeout(() => {
+        window.removeEventListener("message", handleMessage);
+        if (iframe.parentNode === document.body) {
+          document.body.removeChild(iframe);
+        }
+        reject(new Error("Sign message timed out"));
+      }, 30000);
+
+      window.addEventListener("message", handleMessage);
+    });
   }
 
   const logout = async () => {
@@ -37,6 +68,7 @@ export default function useWalletTwo() {
   return {
     headlessLogin,
     loadUserFromToken,
+    signMessage,
     logout,
     user,
     token
