@@ -12,6 +12,8 @@ interface WalletTwoStore {
   setUser: (user: User | null) => void;
   token: string | null;
   setToken: (token: string | null) => void;
+  companyId: string | null;
+  setCompanyId: (companyId: string | null) => void;
 }
 
 export const useStoreWalletTwo = create<WalletTwoStore>((set) => ({
@@ -23,4 +25,7 @@ export const useStoreWalletTwo = create<WalletTwoStore>((set) => ({
 
   token: null,
   setToken: (token: string | null) => set({ token }),
+
+  companyId: null,
+  setCompanyId: (companyId: string | null) => set({ companyId }),
 }));

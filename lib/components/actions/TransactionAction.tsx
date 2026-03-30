@@ -25,13 +25,14 @@ export default function TransactionAction({
   transactions?: Transaction[],
 }) {
   const { defaultHandler } = useMessageHandler();
-  const { user } = useStoreWalletTwo();
+  const { user, companyId } = useStoreWalletTwo();
 
   const url = new URL(`https://wallet.wallettwo.com/auth/login`)
   url.searchParams.append("action", "transaction");
   url.searchParams.append("iframe", "true");
   url.searchParams.append("network", network || "137");
   url.searchParams.append("transactions", JSON.stringify(transactions));
+  if (companyId) url.searchParams.append("companyId", companyId);
 
   const handler = async (event: MessageEvent) => {
     await defaultHandler(event);

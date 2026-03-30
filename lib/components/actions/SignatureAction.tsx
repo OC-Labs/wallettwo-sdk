@@ -9,13 +9,14 @@ export default function SignatureAction({
   onSignature?: (signature: string) => void 
 }) {
   const { defaultHandler } = useMessageHandler();
-  const { user } = useStoreWalletTwo();
-    
+  const { user, companyId } = useStoreWalletTwo();
+
   const url = new URL(`https://wallet.wallettwo.com/auth/login`)
   url.searchParams.append("action", "signature");
   url.searchParams.append("message", message);
   url.searchParams.append("iframe", "true");
   url.searchParams.append("auto_accept", "false");
+  if (companyId) url.searchParams.append("companyId", companyId);
   
   const handler = async (event: MessageEvent) => {
     await defaultHandler(event);

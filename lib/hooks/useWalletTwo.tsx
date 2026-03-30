@@ -3,13 +3,13 @@ import { useStoreWalletTwo, useStoreModal } from "../store";
 import useMessageHandler from "./useMessageHandler";
 
 export default function useWalletTwo() {
-  const { setUser, user, token } = useStoreWalletTwo();
+  const { setUser, user, token, companyId } = useStoreWalletTwo();
   const messageHandlers = useMessageHandler();
   
   const headlessLogin = () => {
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
-    iframe.src = `https://wallet.wallettwo.com/auth/login?action=session&iframe=true`;
+    iframe.src = `https://wallet.wallettwo.com/auth/login?action=session&iframe=true${companyId ? `&companyId=${companyId}` : ''}`;
     iframe.id = `wallettwo-headless-login-iframe`;
     document.body.appendChild(iframe);
 
@@ -32,10 +32,8 @@ export default function useWalletTwo() {
     return new Promise<string>((resolve, reject) => {
       const handleMessage = (event: MessageEvent) => {
         if (event.origin !== "https://wallet.wallettwo.com") return;
-        console.log("Received message from WalletTwo:", event.data);
 
         if (event.data.event === "message_signed") {
-          console.log("Message signed successfully:", event.data.signature);
           window.removeEventListener("message", handleMessage);
           if (iframe.parentNode === document.body) document.body.removeChild(iframe);
           clearTimeout(timeoutId);

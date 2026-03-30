@@ -12,11 +12,12 @@ export default function RampAction({
   onRampCancel?: () => void 
 }) {
   const { defaultHandler } = useMessageHandler();
-  const { user } = useStoreWalletTwo();
-    
+  const { user, companyId } = useStoreWalletTwo();
+
   const url = new URL(`https://wallet.wallettwo.com/auth/login`)
   url.searchParams.append("action", "ramp");
   url.searchParams.append("iframe", "true");
+  if (companyId) url.searchParams.append("companyId", companyId);
   
   const handler = async (event: MessageEvent) => {
     await defaultHandler(event);

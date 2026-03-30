@@ -4,17 +4,23 @@ import { useWalletTwo } from "../main";
 import WalletTwoAPI from "../api/Wallettwo";
 import TransactionModal from "./modals/TransactionModal";
 
-export default function WalletTwoProvider({ 
-  children, 
-  loader, 
-  disableLoader 
-}: { 
-  children: React.ReactNode, 
+export default function WalletTwoProvider({
+  children,
+  loader,
+  disableLoader,
+  companyId
+}: {
+  children: React.ReactNode,
   loader?: React.ReactNode,
-  disableLoader?: boolean
+  disableLoader?: boolean,
+  companyId?: string
 }) {
-  const { loading, token, setToken, setUser } = useStoreWalletTwo();
+  const { loading, token, setToken, setUser, setCompanyId } = useStoreWalletTwo();
   const { headlessLogin } = useWalletTwo();
+
+  useEffect(() => {
+    if (companyId) setCompanyId(companyId);
+  }, [companyId]);
 
   useEffect(() => {
     headlessLogin();

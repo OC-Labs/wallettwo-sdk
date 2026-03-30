@@ -7,11 +7,12 @@ export default function AuthAction({
 }: {
   onAuth?: (accessToken: string) => void 
 }) {
-  const { user, setToken } = useStoreWalletTwo();
-    
+  const { user, setToken, companyId } = useStoreWalletTwo();
+
   const url = new URL(`https://wallet.wallettwo.com/auth/login`)
   url.searchParams.append("action", "session");
   url.searchParams.append("iframe", "true");
+  if (companyId) url.searchParams.append("companyId", companyId);
   
   const handler = async (event: MessageEvent) => {
     if (event.origin !== "https://wallet.wallettwo.com") return;
