@@ -25,7 +25,7 @@ export default function useWalletTwo() {
   const signMessage = async (message: string) => {
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
-    iframe.src = `https://wallet.wallettwo.com/auth/login?action=signature&message=${encodeURIComponent(message)}&iframe=true&auto_accept=true`;
+    iframe.src = `https://wallet.wallettwo.com/auth/login?action=signature&message=${encodeURIComponent(message)}&iframe=true&auto_accept=true${companyId ? `&companyId=${companyId}` : ''}`;
     iframe.id = "wallettwo-headless-signature-iframe";
     document.body.appendChild(iframe);
 
@@ -69,7 +69,7 @@ export default function useWalletTwo() {
   const logout = async () => {
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
-    iframe.src = `https://wallet.wallettwo.com/action/logout?iframe=true&auto_accept=true`;
+    iframe.src = `https://wallet.wallettwo.com/action/logout?iframe=true&auto_accept=true${companyId ? `&companyId=${companyId}` : ''}`;
     iframe.id = "wallettwo-headless-logout-iframe";
     document.body.appendChild(iframe);
 
