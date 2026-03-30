@@ -59,11 +59,7 @@ export default function useWalletTwo() {
 
   const executeTransaction = (params: {
     network?: string,
-    methods?: string[],
-    params?: unknown[],
-    addresses?: string[],
-    abis?: unknown[],
-    waitTx?: boolean,
+    transactions: { method: string; address: string; params: unknown[]; abi?: unknown }[],
     onSuccess?: (tx: string) => void,
     onFailure?: (error: string) => void,
     onCancel?: () => void,

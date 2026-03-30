@@ -9,11 +9,7 @@ export default function TransactionModal() {
   return (<Modal name="transaction-modal" className="">
     <TransactionAction
       network={props.network as string}
-      methods={props.methods as string[]}
-      params={props.params as any[]}
-      addresses={props.addresses as string[]}
-      abis={props.abis as any[]}
-      waitTx={props.waitTx as boolean}
+      transactions={props.transactions as { method: string; address: string; params: unknown[]; abi?: unknown }[]}
       onSuccess={(tx) => {
         close();
         if (props.onSuccess) (props.onSuccess as (tx: string) => void)(tx);
