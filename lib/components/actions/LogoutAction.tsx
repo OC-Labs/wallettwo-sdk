@@ -2,10 +2,12 @@ import { useEffect } from "react";
 import { useStoreWalletTwo } from "../../store";
 import useMessageHandler from "../../hooks/useMessageHandler";
 
-export default function LogoutAction({ 
-  onLogout
-}: { 
-  onLogout?: () => void 
+export default function LogoutAction({
+  onLogout,
+  autoAccept = false
+}: {
+  onLogout?: () => void,
+  autoAccept?: boolean
 }) {
   const { defaultHandler } = useMessageHandler();
   const { user, setToken, setUser, companyId } = useStoreWalletTwo();
@@ -14,6 +16,7 @@ export default function LogoutAction({
   url.searchParams.append("action", "logout");
   url.searchParams.append("iframe", "true");
   if (companyId) url.searchParams.append("companyId", companyId);
+  if (autoAccept) url.searchParams.append("auto_accept", "true");
   
   const handler = async (event: MessageEvent) => {
     await defaultHandler(event);

@@ -2,10 +2,12 @@ import { useEffect } from "react";
 import { useStoreWalletTwo } from "../../store";
 import WalletTwoAPI from "../../api/Wallettwo";
 
-export default function AuthAction({ 
-  onAuth
+export default function AuthAction({
+  onAuth,
+  autoAccept = false
 }: {
-  onAuth?: (accessToken: string) => void 
+  onAuth?: (accessToken: string) => void,
+  autoAccept?: boolean
 }) {
   const { user, setToken, companyId } = useStoreWalletTwo();
 
@@ -13,6 +15,7 @@ export default function AuthAction({
   url.searchParams.append("action", "session");
   url.searchParams.append("iframe", "true");
   if (companyId) url.searchParams.append("companyId", companyId);
+  if (autoAccept) url.searchParams.append("auto_accept", "true");
   
   const handler = async (event: MessageEvent) => {
     if (event.origin !== "https://wallet.wallettwo.com") return;

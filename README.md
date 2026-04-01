@@ -1,6 +1,6 @@
 # WalletTwo SDK
 
-A React SDK for integrating WalletTwo authentication and blockchain transactions into your application.
+A React SDK for integrating WalletTwo wallet authentication, blockchain transactions, message signing, and on/off ramp operations into your application. All wallet interactions happen through secure iframes — no Web3 libraries required on your end.
 
 ## Installation
 
@@ -17,7 +17,7 @@ import { WalletTwoProvider } from '@oc-labs/wallettwo-sdk';
 
 function App() {
   return (
-    <WalletTwoProvider>
+    <WalletTwoProvider companyId="your-company-id">
       <YourApp />
     </WalletTwoProvider>
   );
@@ -28,160 +28,244 @@ function App() {
 
 ### WalletTwoProvider
 
-The root provider component that handles authentication and user session management.
+Root provider that manages authentication state, headless login, and the transaction modal.
 
-**Props:**
-- `children`: React.ReactNode - Your application components
-- `loader?`: React.ReactNode - Custom loading component (optional)
-- `disableLoader?`: boolean - Disable the loading state (optional)
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `children` | `React.ReactNode` | Yes | Your application |
+| `companyId` | `string` | No | Your company identifier, sent on every iframe request |
+| `loader` | `React.ReactNode` | No | Custom loading UI shown during initialization |
+| `disableLoader` | `boolean` | No | Skip the loading state entirely |
 
 ```tsx
-<WalletTwoProvider loader={<CustomLoader />}>
+<WalletTwoProvider companyId="my-company" loader={<Spinner />}>
   <App />
 </WalletTwoProvider>
 ```
 
 ### AuthAction
 
-Button component that triggers user authentication.
+Renders an authentication iframe. Automatically hides when the user is already logged in.
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `onAuth` | `(accessToken: string) => void` | No | Called after successful authentication with the access token |
+| `autoAccept` | `boolean` | No | When `true`, appends `auto_accept=true` to the iframe URL to skip manual confirmation |
 
 ```tsx
 import { AuthAction } from '@oc-labs/wallettwo-sdk';
 
-<AuthAction />
+<AuthAction onAuth={(token) => console.log("Authenticated:", token)} autoAccept />
 ```
 
 ### TransactionAction
 
-Button component that triggers blockchain transactions.
+Renders an iframe for executing blockchain transactions. Only renders when a user is logged in.
 
-**Props:**
-- `network`: string - Network chain ID (e.g., "80002" for Polygon Amoy)
-- `methods`: string[] - Contract method names to call
-- `params`: any[][] - Parameters for each method
-- `addresses`: string[] - Contract addresses
-- `abis`: string[] - Contract ABI names
-- `waitTx?`: boolean - Wait for transaction confirmation (optional)
-- `onSuccess?`: (txId: string) => void - Success callback
-- `onFailure?`: (error: any) => void - Failure callback
-- `onCancel?`: () => void - Cancel callback
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `transactions` | `Transaction[]` | No | Array of transactions to execute |
+| `network` | `string` | No | Chain ID (defaults to `"137"` — Polygon) |
+| `onSuccess` | `(transactionId: string) => void` | No | Called on successful execution |
+| `onFailure` | `(error: string) => void` | No | Called on failure |
+| `onCancel` | `() => void` | No | Called when user cancels |
+| `onExecuting` | `() => void` | No | Called when transactions begin executing |
+
+Each `Transaction` object:
+
+```ts
+{
+  method: string;      // Contract method name
+  address: string;     // Contract address
+  params: unknown[];   // Method parameters
+  abi?: unknown;       // Optional ABI
+}
+```
 
 ```tsx
 import { TransactionAction } from '@oc-labs/wallettwo-sdk';
 
-<TransactionAction 
-  network="80002" 
-  methods={['faucet']} 
-  params={[[]]} 
-  addresses={['0xfa86C7c30840694293a5c997f399d00A4eD3cDD8']} 
-  waitTx={true}
-  abis={['ERC20Faucet']}
-  onSuccess={(txId) => console.log("Success:", txId)}
-  onFailure={(error) => console.error("Error:", error)}
+<TransactionAction
+  network="137"
+  transactions={[
+    {
+      method: 'transfer',
+      address: '0x...',
+      params: ['0xRecipient', '1000000'],
+      abi: ERC20_ABI
+    }
+  ]}
+  onSuccess={(txId) => console.log("TX:", txId)}
+  onFailure={(error) => console.error(error)}
   onCancel={() => console.log("Cancelled")}
 />
 ```
 
-### RampAction
-
-Button component for on/off ramp operations.
-
-```tsx
-import { RampAction } from '@oc-labs/wallettwo-sdk';
-
-<RampAction />
-```
-
 ### SignatureAction
 
-Button component for signing messages.
+Renders an iframe for signing messages. Only renders when a user is logged in and a message is provided.
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `message` | `string` | Yes | The message to sign |
+| `onSignature` | `(signature: string) => void` | No | Called with the resulting signature |
+| `autoAccept` | `boolean` | No | When `true`, appends `auto_accept=true` to the iframe URL to skip manual confirmation |
 
 ```tsx
 import { SignatureAction } from '@oc-labs/wallettwo-sdk';
 
-<SignatureAction />
+<SignatureAction
+  message="Please sign this message to verify ownership"
+  onSignature={(sig) => console.log("Signature:", sig)}
+  autoAccept
+/>
 ```
 
 ### LogoutAction
 
-Button component for user logout.
+Renders an iframe that logs the user out. Only renders when a user is logged in.
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `onLogout` | `() => void` | No | Called after successful logout |
+| `autoAccept` | `boolean` | No | When `true`, appends `auto_accept=true` to the iframe URL to skip manual confirmation |
 
 ```tsx
 import { LogoutAction } from '@oc-labs/wallettwo-sdk';
 
-<LogoutAction />
+<LogoutAction onLogout={() => console.log("Logged out")} autoAccept />
+```
+
+### RampAction
+
+Renders an iframe for on/off ramp operations (buy/sell crypto). Only renders when a user is logged in.
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `onRampSuccess` | `(transactionId: string) => void` | No | Called on successful ramp |
+| `onRampFailure` | `(error: string) => void` | No | Called on failure |
+| `onRampCancel` | `() => void` | No | Called when user cancels |
+
+```tsx
+import { RampAction } from '@oc-labs/wallettwo-sdk';
+
+<RampAction
+  onRampSuccess={(txId) => console.log("Ramp complete:", txId)}
+  onRampFailure={(err) => console.error(err)}
+  onRampCancel={() => console.log("Cancelled")}
+/>
 ```
 
 ## Hooks
 
 ### useWalletTwo
 
-Access WalletTwo functionality programmatically.
+Programmatic access to all WalletTwo functionality.
 
 ```tsx
 import { useWalletTwo } from '@oc-labs/wallettwo-sdk';
 
-function MyComponent() {
-  const { user, headlessLogin, loadUserFromToken, logout } = useWalletTwo();
+const {
+  user,                // User | null — current authenticated user ({ id, email })
+  token,               // string | null — current access token
+  headlessLogin,       // () => void — trigger silent background login
+  loadUserFromToken,   // (token: string) => Promise<void> — load user from an existing token
+  signMessage,         // (message: string) => Promise<string> — sign a message (30s timeout)
+  executeTransaction,  // (params) => void — open the transaction modal
+  logout,              // () => Promise<void> — log out the user (10s timeout)
+} = useWalletTwo();
+```
+
+#### executeTransaction
+
+Opens a modal with a TransactionAction iframe:
+
+```tsx
+executeTransaction({
+  network: '137',
+  transactions: [
+    { method: 'transfer', address: '0x...', params: ['0x...', '1000000'] }
+  ],
+  onSuccess: (txId) => console.log(txId),
+  onFailure: (error) => console.error(error),
+  onCancel: () => console.log('Cancelled'),
+  onExecuting: () => console.log('Executing...'),
+});
+```
+
+#### signMessage
+
+Signs a message using a headless iframe and returns a promise:
+
+```tsx
+try {
+  const signature = await signMessage("Verify wallet ownership");
+  console.log("Signature:", signature);
+} catch (err) {
+  console.error("Timed out or failed");
+}
+```
+
+## Full Example
+
+```tsx
+import {
+  WalletTwoProvider,
+  AuthAction,
+  LogoutAction,
+  useWalletTwo,
+} from '@oc-labs/wallettwo-sdk';
+
+function App() {
+  return (
+    <WalletTwoProvider companyId="my-company">
+      <Wallet />
+    </WalletTwoProvider>
+  );
+}
+
+function Wallet() {
+  const { user, executeTransaction, signMessage } = useWalletTwo();
+
+  if (!user) {
+    return <AuthAction onAuth={(token) => console.log("Logged in")} />;
+  }
 
   return (
     <div>
-      {user && <p>Welcome, {user.email}</p>}
-      <button onClick={logout}>Logout</button>
+      <p>Welcome, {user.email}</p>
+
+      <button onClick={() => executeTransaction({
+        network: '137',
+        transactions: [{
+          method: 'transfer',
+          address: '0xTokenAddress',
+          params: ['0xRecipient', '1000000'],
+        }],
+        onSuccess: (txId) => alert(`TX: ${txId}`),
+      })}>
+        Send Transaction
+      </button>
+
+      <button onClick={async () => {
+        const sig = await signMessage("Hello WalletTwo");
+        console.log(sig);
+      }}>
+        Sign Message
+      </button>
+
+      <LogoutAction onLogout={() => console.log("Bye")} />
     </div>
   );
 }
 ```
 
-**Returns:**
-- `user`: User object or null
-- `headlessLogin()`: Initialize headless authentication
-- `loadUserFromToken(token: string)`: Load user from access token
-- `logout()`: Log out the current user
+## Configuration
 
-## Example
+Set `VITE_WALLETTWO_URL` to override the default API base URL (`https://api.wallettwo.com`):
 
-```tsx
-import { 
-  WalletTwoProvider, 
-  AuthAction, 
-  TransactionAction,
-  LogoutAction,
-  useWalletTwo 
-} from '@oc-labs/wallettwo-sdk';
-
-function App() {
-  return (
-    <WalletTwoProvider>
-      <MyApp />
-    </WalletTwoProvider>
-  );
-}
-
-function MyApp() {
-  const { user } = useWalletTwo();
-
-  return (
-    <div>
-      {!user ? (
-        <AuthAction />
-      ) : (
-        <>
-          <p>Welcome, {user.email}</p>
-          <TransactionAction 
-            network="80002" 
-            methods={['transfer']} 
-            params={[['0x...', '1000000']]} 
-            addresses={['0x...']} 
-            abis={['ERC20']}
-            onSuccess={(txId) => alert('Transaction successful!')}
-          />
-          <LogoutAction />
-        </>
-      )}
-    </div>
-  );
-}
+```env
+VITE_WALLETTWO_URL=https://your-custom-api.com
 ```
 
 ## License

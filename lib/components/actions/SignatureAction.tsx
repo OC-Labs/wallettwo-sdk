@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import { useStoreWalletTwo } from "../../store";
 import useMessageHandler from "../../hooks/useMessageHandler";
 
-export default function SignatureAction({ 
-  message = "", onSignature 
-}: { 
-  message: string, 
-  onSignature?: (signature: string) => void 
+export default function SignatureAction({
+  message = "", onSignature, autoAccept = false
+}: {
+  message: string,
+  onSignature?: (signature: string) => void,
+  autoAccept?: boolean
 }) {
   const { defaultHandler } = useMessageHandler();
   const { user, companyId } = useStoreWalletTwo();
@@ -15,7 +16,7 @@ export default function SignatureAction({
   url.searchParams.append("action", "signature");
   url.searchParams.append("message", message);
   url.searchParams.append("iframe", "true");
-  url.searchParams.append("auto_accept", "false");
+  if (autoAccept) url.searchParams.append("auto_accept", "true");
   if (companyId) url.searchParams.append("companyId", companyId);
   
   const handler = async (event: MessageEvent) => {
