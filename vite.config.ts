@@ -16,6 +16,7 @@ export default defineConfig({
     }),
   ],
   build: {
+    minify: false,
     copyPublicDir: true,
     lib: {
       entry: resolve(__dirname, 'lib/main.ts'),

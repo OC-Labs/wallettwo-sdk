@@ -1,4 +1,4 @@
-name: Build and Publish to GitHub Packages
+name: Build and Publish to npm
 
 on:
   push:
@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,8 +22,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@oc-labs'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Configure Git
         run: |
@@ -45,13 +43,13 @@ jobs:
         run: |
           # Get current version from package.json
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-          
+
           # Bump patch version
           npm version patch -m "chore: bump version to %s [skip ci]"
-          
+
           # Get new version
           NEW_VERSION=$(node -p "require('./package.json').version")
-          
+
           echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
           echo "new=$NEW_VERSION" >> $GITHUB_OUTPUT
 
@@ -60,10 +58,10 @@ jobs:
           git push
           git push --tags
 
-      - name: Publish to GitHub Packages
-        run: npm publish
+      - name: Publish to npm
+        run: npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -74,7 +72,7 @@ jobs:
           release_name: Release v${{ steps.version.outputs.new }}
           body: |
             Automated release v${{ steps.version.outputs.new }}
-            
+
             Previous version: ${{ steps.version.outputs.current }}
           draft: false
           prerelease: false
