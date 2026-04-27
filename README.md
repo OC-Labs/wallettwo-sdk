@@ -1,4 +1,4 @@
-# WalletTwo SDK
+# WalletTwo SDK - Onchainlabs
 
 A React SDK for integrating WalletTwo wallet authentication, blockchain transactions, message signing, and on/off ramp operations into your application. All wallet interactions happen through secure iframes — no Web3 libraries required on your end.
 
