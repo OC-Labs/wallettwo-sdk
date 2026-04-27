@@ -6,7 +6,7 @@ interface Transaction {
   method: string;
   address: string;
   params: unknown[];
-  abi?: unknown;
+  abiURL?: string;
 }
 
 export default function TransactionAction({
