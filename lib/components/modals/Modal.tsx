@@ -59,6 +59,7 @@ export default function Modal({
               className={`
                 transform overflow-y-auto
                 rounded-2xl bg-white p-6 sm:p-8 shadow-xl transition-all
+                flex flex-col
                 ${className || ''}
               `}
               {...props}
