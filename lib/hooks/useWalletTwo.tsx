@@ -62,8 +62,8 @@ export default function useWalletTwo() {
     onFailure?: (error: string) => void,
     onCancel?: () => void,
     onExecuting?: () => void,
-  }) => {
-    openModal("transaction-modal", params as Record<string, unknown>);
+  }, className?: string) => {
+    openModal("transaction-modal", { ...params, className }  as Record<string, unknown>);
   }
 
   const logout = async () => {

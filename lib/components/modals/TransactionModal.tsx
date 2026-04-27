@@ -6,7 +6,7 @@ export default function TransactionModal() {
   const { modal, close } = useModal("transaction-modal");
   const props = modal?.props || {};
 
-  return (<Modal name="transaction-modal" className="">
+  return (<Modal name="transaction-modal" className={(props.className as string) || ""}>
     <TransactionAction
       network={props.network as string}
       transactions={props.transactions as { method: string; address: string; params: unknown[]; abi?: unknown }[]}
