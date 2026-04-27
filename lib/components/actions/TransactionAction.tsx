@@ -71,7 +71,7 @@ export default function TransactionAction({
   return <iframe
     src={url.toString()}
     id="wallettwo-transaction-iframe"
-    className="w-full min-w-[600px] min-h-[650px] border-0"
+    className="w-full h-full border-0"
     title="WalletTwo Transaction"
   />
 }
