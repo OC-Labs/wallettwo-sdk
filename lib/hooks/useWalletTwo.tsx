@@ -66,6 +66,27 @@ export default function useWalletTwo() {
     openModal("transaction-modal", { ...params, className }  as Record<string, unknown>);
   }
 
+  const openRamp = (params?: {
+    contract?: string,
+    amount?: string | number,
+    paymentMethod?: string,
+    currency?: string,
+    operator?: string,
+    chainId?: number,
+    externalId?: string,
+    redirectUrl?: string,
+    additionalTransactions?: unknown[],
+    useFiat?: boolean,
+    onRampSuccess?: (session: unknown) => void,
+    onRampFailure?: (error: string) => void,
+    onRampCancel?: () => void,
+  }, className?: string) => {
+    openModal("ramp-modal", {
+      ...params,
+      className: className || "w-[calc(100vw-2rem)] max-w-[600px] sm:w-[600px] !p-0",
+    } as Record<string, unknown>);
+  }
+
   const logout = async () => {
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
@@ -81,6 +102,7 @@ export default function useWalletTwo() {
     loadUserFromToken,
     signMessage,
     executeTransaction,
+    openRamp,
     logout,
     user,
     token

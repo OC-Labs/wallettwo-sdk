@@ -4,6 +4,7 @@ interface Modal {
   id: string;
   isOpen: boolean;
   props?: Record<string, unknown>;
+  instanceId: number;
 }
 
 interface ModalState {
@@ -21,7 +22,12 @@ export const useStoreModal = create<ModalState>((set, get) => ({
     set((state) => ({
       modals: {
         ...state.modals,
-        [id]: { id, isOpen: true, props },
+        [id]: {
+          id,
+          isOpen: true,
+          props,
+          instanceId: (state.modals[id]?.instanceId || 0) + 1,
+        },
       },
     })),
 

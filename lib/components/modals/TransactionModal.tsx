@@ -8,6 +8,7 @@ export default function TransactionModal() {
 
   return (<Modal name="transaction-modal" className={(props.className as string) || ""}>
     <TransactionAction
+      key={modal?.instanceId}
       network={props.network as string}
       transactions={props.transactions as { method: string; address: string; params: unknown[]; abi?: unknown }[]}
       onSuccess={(tx) => {

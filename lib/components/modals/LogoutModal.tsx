@@ -7,6 +7,6 @@ export default function LogoutModal() {
   const autoAccept = modal?.props?.autoAccept as boolean | undefined;
 
   return (<Modal name="logout-modal" title="Authenticate with WalletTwo" className="w-[420px] h-[620px]">
-    <LogoutAction autoAccept={autoAccept} />
+    <LogoutAction key={modal?.instanceId} autoAccept={autoAccept} />
   </Modal>);
 }

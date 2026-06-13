@@ -7,6 +7,6 @@ export default function AuthModal() {
   const autoAccept = modal?.props?.autoAccept as boolean | undefined;
 
   return (<Modal name="auth-modal" title="Authenticate with WalletTwo" className="w-[420px] h-[620px]">
-    <AuthView autoAccept={autoAccept} />
+    <AuthView key={modal?.instanceId} autoAccept={autoAccept} />
   </Modal>);
 }

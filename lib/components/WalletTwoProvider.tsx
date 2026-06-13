@@ -3,6 +3,7 @@ import { useStoreWalletTwo } from "../store";
 import { useWalletTwo } from "../main";
 import WalletTwoAPI from "../api/Wallettwo";
 import TransactionModal from "./modals/TransactionModal";
+import RampModal from "./modals/RampModal";
 
 export default function WalletTwoProvider({
   children,
@@ -46,5 +47,6 @@ export default function WalletTwoProvider({
   return (<div className="wallettwo-provider-container-root">
     {children}
     <TransactionModal />
+    <RampModal />
   </div>);
 }
